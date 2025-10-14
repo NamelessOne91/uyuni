@@ -545,7 +545,7 @@ Then(/^I open the details page of the image for "([^"]*)"$/) do |host|
 
   begin
     tr = find('tr', text: name)
-    tr.find('button[aria-label="Details"]').click
+    tr.find('button[title="Details"]').click
   rescue Capybara::ElementNotFound
     raise ScriptError, "Can not open details page for image #{name}"
   end
