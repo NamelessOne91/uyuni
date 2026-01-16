@@ -96,6 +96,7 @@ def capybara_register_driver
     chrome_options = Selenium::WebDriver::Chrome::Options.new(
       args: %w[
         --disable-dev-shm-usage
+        --disable-gpu
         --ignore-certificate-errors
         --window-size=2048,2048
         --js-flags=--max-old-space-size=2048
