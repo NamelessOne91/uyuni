@@ -8,6 +8,7 @@ require 'base64'
 require 'capybara'
 require 'capybara/cucumber'
 require 'cucumber'
+require 'fileutils'
 # require 'simplecov'
 require 'minitest/autorun'
 require 'minitest/unit'
@@ -88,6 +89,19 @@ end
 # Fix a problem with minitest and cucumber options passed through rake
 MultiTest.disable_autorun
 
+def clear_chrome_locks(user_data_dir)
+  # Chromium/Chrome creates these three "Singleton" files
+  lock_files = ["SingletonLock", "SingletonCookie", "SingletonSocket"]
+
+  lock_files.each do |file_name|
+    path = File.join(user_data_dir, file_name)
+    if File.exist?(path)
+      puts "Found existing lock file at #{path}. Clearing it..."
+      FileUtils.rm_f(path)
+    end
+  end
+end
+
 # register chromedriver in headless mode
 def capybara_register_driver
   Capybara.register_driver :selenium_chrome_headless do |app|
@@ -106,10 +120,13 @@ def capybara_register_driver
     )
     chrome_options.args << '--headless=new' unless $debug_mode
     chrome_options.args << "--remote-debugging-port=#{$chromium_dev_port}" if $chromium_dev_tools
+
     if $is_cloud_provider
-      chrome_options.args << '--user-data-dir=/root'
-      chrome_options.args << '--remote-allow-origins=*'
+      user_data_dir = '/root'
+      clear_chrome_locks(user_data_dir)
+      chrome_options.args << "--user-data-dir=#{user_data_dir}"
     end
+
     chrome_options.add_preference('prompt_for_download', false)
     chrome_options.add_preference('download.default_directory', '/tmp/downloads')
     chrome_options.add_preference('unhandledPromptBehavior', 'accept')
