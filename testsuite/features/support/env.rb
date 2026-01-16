@@ -90,6 +90,9 @@ end
 MultiTest.disable_autorun
 
 def clear_chrome_locks(user_data_dir)
+  # kill hang previous processes
+  system("pkill -9 -f chromium")
+  system("pkill -9 -f chromedriver")
   # Chromium/Chrome creates these three "Singleton" files
   lock_files = ["SingletonLock", "SingletonCookie", "SingletonSocket"]
 
