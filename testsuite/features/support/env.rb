@@ -109,7 +109,7 @@ end
 def capybara_register_driver
   Capybara.register_driver :selenium_chrome_headless do |app|
     # WORKAROUND failure at Scenario: Test IPMI functions: increase from 60 s to 180 s
-    client = Selenium::WebDriver::Remote::Http::Default.new(open_timeout: 30, read_timeout: 240)
+    client = Selenium::WebDriver::Remote::Http::Default.new(open_timeout: 120, read_timeout: 240)
     chrome_options = Selenium::WebDriver::Chrome::Options.new(
       args: %w[
         --disable-dev-shm-usage
