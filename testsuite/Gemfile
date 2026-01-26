@@ -5,6 +5,8 @@ source 'https://rubygems.org'
 
 gem 'bcrypt_pbkdf', '~> 1.1'
 gem 'capybara', '3.40.0'
+gem 'cucumber-messages', '31.2.0'
+gem 'cucumber-cucumber-expressions', '18.1.0'
 gem 'cucumber', '10.2.0'
 gem 'ed25519', '~> 1.4'
 gem 'faraday', '~>2.14'
