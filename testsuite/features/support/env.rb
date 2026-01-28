@@ -114,8 +114,7 @@ def capybara_register_driver
     chrome_options.add_preference('unexpectedAlertBehaviour', 'accept')
 
     service = Selenium::WebDriver::Service.chrome(
-      log_path: '/tmp/chromedriver.log',
-      verbose: true
+      args: ["--log-path=/tmp/chromedriver.log", "--verbose"]
     )
 
     Capybara::Selenium::Driver.new(
