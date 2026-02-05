@@ -105,7 +105,7 @@ def capybara_register_driver
     chrome_options.add_argument('--screen-info={0,0 2048x2048}')
 
     chrome_options.add_argument("--remote-debugging-port=#{$chromium_dev_port}") if $chromium_dev_tools
-    chrome_options.add_argument("--user-data-dir=/tmp/chrome_profile_#{Time.now.to_i}") if $is_cloud_provider
+    chrome_options.add_argument("--user-data-dir=/tmp/chrome_profile_#{Process.pid}_#{Time.now.to_i}") if $is_cloud_provider
 
     chrome_options.add_preference('prompt_for_download', false)
     chrome_options.add_preference('download.default_directory', '/tmp/downloads')
