@@ -93,26 +93,31 @@ def capybara_register_driver
   Capybara.register_driver :selenium_chrome_headless do |app|
     # WORKAROUND failure at Scenario: Test IPMI functions: increase from 60 s to 180 s
     client = Selenium::WebDriver::Remote::Http::Default.new(open_timeout: 30, read_timeout: 240)
-    chrome_options = Selenium::WebDriver::Chrome::Options.new(
-      args: %w[
-        --disable-dev-shm-usage
-        --ignore-certificate-errors
-        --window-size=2048,2048
-        --js-flags=--max-old-space-size=2048
-        --no-sandbox
-        --disable-notifications
-      ]
-    )
-    chrome_options.args << '--headless=new' unless $debug_mode
-    chrome_options.args << "--remote-debugging-port=#{$chromium_dev_port}" if $chromium_dev_tools
-    chrome_options.args << '--user-data-dir=/root' if $is_cloud_provider
+    chrome_options = Selenium::WebDriver::Chrome::Options.new
+
+    chrome_options.add_argument('--headless=new') unless $debug_mode
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+    chrome_options.add_argument('--disable-gpu')
+    chrome_options.add_argument('--ignore-certificate-errors')
+    chrome_options.add_argument('--disable-notifications')
+    chrome_options.add_argument('--js-flags=--max-old-space-size=2048')
+    chrome_options.add_argument('--screen-info={0,0 2048x2048}')
+
+    chrome_options.add_argument("--remote-debugging-port=#{$chromium_dev_port}") if $chromium_dev_tools
+    chrome_options.add_argument("--user-data-dir=/tmp/chrome_profile_#{Time.now.to_i}") if $is_cloud_provider
 
     chrome_options.add_preference('prompt_for_download', false)
     chrome_options.add_preference('download.default_directory', '/tmp/downloads')
     chrome_options.add_preference('unhandledPromptBehavior', 'accept')
     chrome_options.add_preference('unexpectedAlertBehaviour', 'accept')
 
-    Capybara::Selenium::Driver.new(app, browser: :chrome, options: chrome_options, http_client: client)
+    Capybara::Selenium::Driver.new(
+      app,
+      browser: :chrome,
+      options: chrome_options,
+      http_client: client
+    )
   end
 end
 
