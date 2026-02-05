@@ -112,12 +112,7 @@ def capybara_register_driver
     chrome_options.add_preference('unhandledPromptBehavior', 'accept')
     chrome_options.add_preference('unexpectedAlertBehaviour', 'accept')
 
-    Capybara::Selenium::Driver.new(
-      app,
-      browser: :chrome,
-      options: chrome_options,
-      http_client: client
-    )
+    Capybara::Selenium::Driver.new(app, browser: :chrome, options: chrome_options, http_client: client)
   end
 end
 
