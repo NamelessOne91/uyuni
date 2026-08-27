@@ -712,6 +712,7 @@ def channel_timeout(channel)
 
   timeout = TIMEOUT_BY_CHANNEL_NAME[channel]
   timeout *= 2 if $code_coverage_mode
+  timeout *= 2 if $is_cloud_provider
   timeout
 end
 
