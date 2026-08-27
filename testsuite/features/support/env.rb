@@ -345,6 +345,8 @@ end
 # a fresh browser for the next scenario. We deliberately do NOT call driver.quit - it can re-wedge.
 def unblock_wedged_browser
   kill_descendant_processes(Process.pid)
+
+  Capybara.reset_sessions! rescue nil
 end
 
 # Layer 3 watchdog: a hard per-scenario ceiling that survives hangs which neither Ruby's
