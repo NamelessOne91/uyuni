@@ -306,6 +306,7 @@ After('@scope_cobbler') do |scenario|
 end
 
 AfterStep do
+  next if $watchdog_run_aborted
   next unless capybara_session_created?
 
   # has_no_css? returns immediately when the spinner is absent (the common case) and otherwise polls
@@ -365,8 +366,7 @@ Around do |scenario, block|
   # limit <= 0 disables the watchdog (e.g. @long_running with no LONG_SCENARIO_HARD_LIMIT set, such
   # as a 13 h product sync in BV); the external job wall-clock remains the backstop in that case.
   if limit <= 0
-    block.call
-    next
+    next block.call
   end
 
   finished = false
@@ -386,11 +386,13 @@ Around do |scenario, block|
     end
 
   begin
-    block.call
+    result = block.call
   ensure
     finished = true
     watchdog.kill
   end
+
+  result
 end
 
 # Must be the first unconditional Before hook in the suite (registered here, right after the
