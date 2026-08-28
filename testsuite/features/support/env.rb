@@ -320,6 +320,17 @@ Before do
   log "This scenario ran at: #{current_time}\n"
 end
 
+# After the browser process is SIGKILLed, the gem's at_exit cleanup tries to call browser.close on
+# a dead Playwright connection. sync_send_message_to_server returns nil instead of a future, so
+# .value! raises NoMethodError. Prepend this guard (once) to swallow it cleanly.
+DEAD_CONNECTION_GUARD = Module.new do
+  def send_message_to_server(...)
+    super
+  rescue NoMethodError
+    nil
+  end
+end
+
 # Recursively SIGKILL every descendant process of the given PID (the Playwright Node server and the
 # whole Chromium process tree). Scoped to our own descendants so parallel workers - which run in
 # separate Ruby processes - are never affected. Killed depth-first so we enumerate grandchildren
@@ -345,7 +356,7 @@ end
 # a fresh browser for the next scenario. We deliberately do NOT call driver.quit - it can re-wedge.
 def unblock_wedged_browser
   kill_descendant_processes(Process.pid)
-
+  Playwright::Connection.prepend(DEAD_CONNECTION_GUARD) unless Playwright::Connection.ancestors.include?(DEAD_CONNECTION_GUARD)
   Capybara.reset_sessions! rescue nil
 end
 
