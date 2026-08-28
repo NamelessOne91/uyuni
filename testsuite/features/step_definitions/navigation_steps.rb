@@ -662,7 +662,12 @@ Given(/^I am authorized as "([^"]*)" with password "([^"]*)"$/) do |user, passwd
     # No need to logout
   end
 
-  raise ScriptError, 'Login page is not correctly loaded' unless has_field?('username')
+  login_page_loaded = begin
+    has_field?('username')
+  rescue NoMethodError
+    false
+  end
+  raise ScriptError, 'Login page is not correctly loaded' unless login_page_loaded
 
   fill_in('username', with: $current_user)
   fill_in('password', with: $current_password)
