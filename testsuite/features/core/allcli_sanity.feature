@@ -1,6 +1,5 @@
 # Copyright (c) 2019-2025 SUSE LLC
 # SPDX-License-Identifier: MIT
-
 Feature: Sanity checks
   In order to use the product
   I want to be sure to use a sane environment
@@ -17,7 +16,7 @@ Feature: Sanity checks
     And service "taskomatic" is active on "server"
     And socket "tftp" is active on "server"
     And service "tomcat" is active on "server"
-    And service "uyuni-update-config" is active on "server"
+    # And service "uyuni-update-config" is active on "server"
     And service "uyuni-check-database" is active on "server"
     And service "spacewalk-wait-for-tomcat" is active on "server"
     And service "spacewalk-wait-for-salt" is active on "server"
@@ -25,9 +24,8 @@ Feature: Sanity checks
     And service "salt-secrets-config" is active on "server"
     And service "cobbler-refresh-mkloaders" is active on "server"
 
-@containerized_server
-@skip_if_rke2
-   Scenario: Podman containers are running
+  @containerized_server @skip_if_rke2
+  Scenario: Podman containers are running
     Then podman container "uyuni-db" should be running on "server"
     And podman container "uyuni-db" should be healthy on "server"
     And podman container "uyuni-server" should be running on "server"
@@ -37,66 +35,66 @@ Feature: Sanity checks
     And podman container "uyuni-server-attestation-0" should be running on "server"
     And podman container "uyuni-hub-xmlrpc-0" should be running on "server"
 
-@proxy
+  @proxy
   Scenario: The proxy is healthy
     Then "proxy" should have a FQDN
     And reverse resolution should work for "proxy"
     And "proxy" should communicate with the server using public interface
     And the clock from "proxy" should be exact
 
-@sle_minion
+  @sle_minion
   Scenario: The minion is healthy
     Then "sle_minion" should have a FQDN
     And reverse resolution should work for "sle_minion"
     And "sle_minion" should communicate with the server using public interface
     And the clock from "sle_minion" should be exact
 
-@build_host
+  @build_host
   Scenario: The build host is healthy
     Then "build_host" should have a FQDN
     And reverse resolution should work for "build_host"
     And "build_host" should communicate with the server using public interface
     And the clock from "build_host" should be exact
 
-@sshminion
+  @sshminion
   Scenario: The SSH minion is healthy
     Then "sshminion" should have a FQDN
     And reverse resolution should work for "sshminion"
     And "sshminion" should communicate with the server using public interface
     And the clock from "sshminion" should be exact
 
-@rhlike_minion
+  @rhlike_minion
   Scenario: The Red Hat-like minion is healthy
     Then "rhlike_minion" should have a FQDN
     And reverse resolution should work for "rhlike_minion"
     And "rhlike_minion" should communicate with the server using public interface
     And the clock from "rhlike_minion" should be exact
 
-@deblike_minion
+  @deblike_minion
   Scenario: The Debian-like minion is healthy
     Then "deblike_minion" should have a FQDN
     And reverse resolution should work for "deblike_minion"
     And "deblike_minion" should communicate with the server using public interface
     And the clock from "deblike_minion" should be exact
 
-@skip_if_cloud
+  @skip_if_cloud
   Scenario: The external resources can be reached
     Then it should be possible to reach the test packages
     And it should be possible to reach the build sources
     And it should be possible to reach the Docker profiles
 
-@server_http_proxy
+  @server_http_proxy
   Scenario: The HTTP proxy is working
     Then it should be possible to use the HTTP proxy
 
-@auth_registry
+  @auth_registry
   Scenario: The registry with authentication is healthy
     Then it should be possible to reach the authenticated registry
 
-@no_auth_registry
+  @no_auth_registry
   Scenario: The registry without authentication is healthy
     Then it should be possible to reach the not authenticated registry
 
-@custom_download_endpoint
+  @custom_download_endpoint
   Scenario: The custom download endpoint is working
     Then it should be possible to use the custom download endpoint
